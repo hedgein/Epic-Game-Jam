@@ -9,23 +9,34 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "GenWalker",
+"language": "GDScript",
+"path": "res://Scripts/GenWalker.gd"
+}, {
 "base": "",
 "class": "GitAPI",
 "language": "NativeScript",
 "path": "res://addons/godot-git-plugin/git_api.gdns"
 } ]
 _global_script_class_icons={
+"GenWalker": "",
 "GitAPI": ""
 }
 
 [application]
 
 config/name="Epic-Game-Jam"
-config/icon="res://icon.png"
+run/main_scene="res://Scenes/TitleScreen.tscn"
+config/icon="res://Art/icon.png"
 
 [gdnative]
 
 singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
+
+[global]
+
+window=false
 
 [physics]
 
@@ -33,4 +44,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+environment/default_clear_color=Color( 0.211765, 0.286275, 0.380392, 1 )
 environment/default_environment="res://default_env.tres"
