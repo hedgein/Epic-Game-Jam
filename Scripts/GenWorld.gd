@@ -6,10 +6,14 @@ const Player = preload("res://Scenes/Player.tscn")
 const Exit = preload("res://Scenes/Stairway.tscn")
 const TimeLoop = preload("res://Scenes/TimeLoop.tscn")
 const Inventory = preload("res://Inventory.tscn")
+const Item = preload("res://Scenes/Item.tscn")
 
 #set a global variables
 var position_start = Vector2(0,0)
 var player = Player.instance()
+
+var inventory_array = []
+
 
 # these numbers come from the size of the starting world
 var borders = Rect2(1, 1, 43, 26)
@@ -32,6 +36,7 @@ func generate_level():
 
     #add player instance & set player positon    
     add_child(player)
+    player.connect("collided_with_item", self, "on_collided_with_item")
     position_start = map.front() * gridSize
     player.position = position_start
 
@@ -48,6 +53,12 @@ func generate_level():
     #add inventory instance
     var inventory = Inventory.instance()
     add_child(inventory)
+    inventory_array = inventory.get_child(0).get_child(0).get_children()
+    
+    #add item instance
+    var item = Item.instance()
+    add_child(item)
+    item.position = player.position + Vector2(0, 100)
 
     walker.queue_free()
     for location in map:
@@ -56,6 +67,16 @@ func generate_level():
 
 func reload_level():
     get_tree().reload_current_scene()
-
+    
 func on_restart():
     player.position = position_start
+
+
+func on_collided_with_item():
+    for slot in inventory_array:
+        if (slot.texture == null):
+            slot.texture = load("res://Art/icon-green.png")
+            break
+        else:
+            pass
+    
