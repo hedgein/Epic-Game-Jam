@@ -5,6 +5,7 @@ extends Node2D
 const Player = preload("res://Scenes/Player.tscn")
 const Exit = preload("res://Scenes/Stairway.tscn")
 const TimeLoop = preload("res://Scenes/TimeLoop.tscn")
+const Inventory = preload("res://Inventory.tscn")
 
 #set a global variables
 var position_start = Vector2(0,0)
@@ -43,6 +44,10 @@ func generate_level():
     var timeLoop = TimeLoop.instance()
     add_child(timeLoop)
     timeLoop.connect("restart", self, "on_restart")
+    
+    #add inventory instance
+    var inventory = Inventory.instance()
+    add_child(inventory)
 
     walker.queue_free()
     for location in map:
