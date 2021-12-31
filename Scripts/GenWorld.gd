@@ -6,6 +6,7 @@ const Player = preload("res://Scenes/Player.tscn")
 const Exit = preload("res://Scenes/Stairway.tscn")
 const TimeLoop = preload("res://Scenes/TimeLoop.tscn")
 
+#set a global variables
 var position_start = Vector2(0,0)
 var player = Player.instance()
 
@@ -27,8 +28,8 @@ func generate_level():
     #this var can be tweaked to generate bigger rooms
     var map = walker.walk(200)
 
-    # create player & set positon
-    
+
+    #add player instance & set player positon    
     add_child(player)
     position_start = map.front() * gridSize
     player.position = position_start
@@ -38,6 +39,7 @@ func generate_level():
     exit.position = walker.get_end_room().position * gridSize
     exit.connect("next_level", self, "reload_level")
     
+    #add  time loop instance, connect to signal for restart
     var timeLoop = TimeLoop.instance()
     add_child(timeLoop)
     timeLoop.connect("restart", self, "on_restart")
