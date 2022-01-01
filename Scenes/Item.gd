@@ -1,5 +1,6 @@
-extends StaticBody2D
+extends Area2D
 
+signal delete_item_self
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -14,3 +15,9 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #    pass
+
+
+
+
+func _on_Item_body_entered(body):
+    emit_signal("delete_item_self")

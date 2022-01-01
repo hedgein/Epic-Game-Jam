@@ -11,6 +11,7 @@ const Item = preload("res://Scenes/Item.tscn")
 #set a global variables
 var position_start = Vector2(0,0)
 var player = Player.instance()
+var item = Item.instance()
 
 var inventory_array = []
 
@@ -36,7 +37,6 @@ func generate_level():
 
     #add player instance & set player positon    
     add_child(player)
-    player.connect("collided_with_item", self, "on_collided_with_item")
     position_start = map.front() * gridSize
     player.position = position_start
 
@@ -56,10 +56,10 @@ func generate_level():
     inventory_array = inventory.get_child(0).get_child(0).get_children()
     
     #add item instance
-    var item = Item.instance()
     add_child(item)
     item.position = player.position + Vector2(0, 100)
-
+    item.connect("delete_item_self", self, "on_delete_item_self") 
+    
     walker.queue_free()
     for location in map:
         tileMap.set_cellv(location, -1)
@@ -70,9 +70,12 @@ func reload_level():
     
 func on_restart():
     player.position = position_start
+    add_child(item)
+    item.position = player.position + Vector2(0, 100)
 
 
-func on_collided_with_item():
+func on_delete_item_self():
+    remove_child(item)
     for slot in inventory_array:
         if (slot.texture == null):
             slot.texture = load("res://Art/icon-green.png")
