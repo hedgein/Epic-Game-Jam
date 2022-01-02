@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Inventory.gd" type="Script" id=1]
+
+[node name="Inventory" type="Node"]
+script = ExtResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Backpack" type="HBoxContainer" parent="CanvasLayer"]
+margin_left = 194.0
+margin_top = 1.0
+margin_right = 863.0
+margin_bottom = 122.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureSlot" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot2" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 4.0
+margin_right = 4.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot3" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 8.0
+margin_right = 8.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot4" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 12.0
+margin_right = 12.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot5" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 16.0
+margin_right = 16.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot6" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 20.0
+margin_right = 20.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot7" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 24.0
+margin_right = 24.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureSlot8" type="TextureRect" parent="CanvasLayer/Backpack"]
+margin_left = 28.0
+margin_right = 28.0
+margin_bottom = 121.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
