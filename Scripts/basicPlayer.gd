@@ -40,10 +40,10 @@ func get_input_release(normal):
     var dir = 0
     #if wall is grabbed to left
     if normal == Vector2(1,0):
-        dir += 4
+        dir += 3
     #if wall is grabbed to right
     if normal == Vector2(-1, 0):
-        dir -= 4
+        dir -= 3
     if dir != 0:
         velocity.x = lerp(velocity.x, dir * speed, acceleration)
     else:
