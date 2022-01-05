@@ -53,7 +53,7 @@ func generate_level():
     #add inventory instance
     var inventory = Inventory.instance()
     add_child(inventory)
-    inventory_array = inventory.get_child(0).get_child(0).get_children()
+    inventory_array = get_tree().get_nodes_in_group("Slots")
     
     #add item instance
     add_child(item)
