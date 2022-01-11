@@ -1,11 +1,11 @@
 extends Node2D
 
 # This type must corispond to the room layout in the Rooms Scene 
-enum RoomType { TB, TBL, TBR, TBLR, SIDE}
+enum RoomType { LR, LRB, LRT, LRTB, SIDE}
 enum Cell { GROUND, VEGETATION, SPIKES, MAYBE_GROUND, MAYBE_BUSH, MAYBE_TREE, MAYBE_SPIKES }
 
-# const TOP_OPENED := [RoomType.TBL, RoomType.TBLR]
-# const TOP_CLOSED := [RoomType.TB, RoomType.TBR]
+const TOP_OPENED := [RoomType.LRT, RoomType.LRTB]
+const TOP_CLOSED := [RoomType.LR, RoomType.LRB]
 
 const CELL_MAP := {
   Cell.GROUND: {"chance": 1.0, "cell": [[Cell.GROUND]], "size": Vector2.ONE},

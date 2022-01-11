@@ -71,14 +71,14 @@ func _update_room_type() -> void:
 		var last: Dictionary = _state.path.back()
 
 		# unused special case check
-		""" if last.type in _rooms.BOTTOM_CLOSED and _state.delta.is_equal_approx(Vector2.DOWN):
-			var index := _rng.randi_range(0, _rooms.BOTTOM_OPENED.size() - 1)
+		if last.type in _rooms.TOP_CLOSED and _state.delta.is_equal_approx(Vector2.DOWN):
+			var index := _rng.randi_range(0, _rooms.TOP_OPENED.size() - 1)
 			var type := int = (
-				_rooms.BOTTOM_OPENED[index]
-				if _state.down_counter < 2
+				_rooms.TOP_OPENED[index]
+				if _state.up_counter < 2
 				else _rooms.RoomType.TDLR
 				)
-				_state.path[-1].type = type """
+				_state.path[-1].type = type
 
 	var type: int (
 		_rooms.RoomType.TDL
@@ -87,6 +87,4 @@ func _update_room_type() -> void:
 	)
 
 	_state.empty_celsl.erase(_state.offset)
-	_state.path.push_back({"offset": _state.offset, "type": type})
-
-	
+	_state.path.push_back({"offset": _state.offset, "type": type})	
