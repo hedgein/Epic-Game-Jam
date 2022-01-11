@@ -4,9 +4,10 @@ extends Node2D
 enum RoomType { LR, LRB, LRT, LRTB, SIDE}
 enum Cell { GROUND, VEGETATION, SPIKES, MAYBE_GROUND, MAYBE_BUSH, MAYBE_TREE, MAYBE_SPIKES }
 
-const TOP_OPENED := [RoomType.LRT, RoomType.LRTB]
-const TOP_CLOSED := [RoomType.LR, RoomType.LRB]
+const BOTTOM_OPENED := [RoomType.LRB, RoomType.LRTB]
+const BOTTOM_CLOSED := [RoomType.LR, RoomType.LRT]
 
+"""
 const CELL_MAP := {
   Cell.GROUND: {"chance": 1.0, "cell": [[Cell.GROUND]], "size": Vector2.ONE},
   Cell.VEGETATION: {"chance": 0.0, "cell": [[Cell.VEGETATION]], "size": Vector2.ONE},
@@ -15,12 +16,13 @@ const CELL_MAP := {
   Cell.MAYBE_BUSH: {"chance": 0.0, "cell": [[Cell.VEGETATION]], "size": Vector2.ONE},
   Cell.MAYBE_TREE:
   {
-    "chance": 0.0,
-    "cell": [[Cell.VEGETATION, Cell.VEGETATION], [Cell.VEGETATION, Cell.VEGETATION]],
-    "size": 2 * Vector2.ONE
+	"chance": 0.0,
+	"cell": [[Cell.VEGETATION, Cell.VEGETATION], [Cell.VEGETATION, Cell.VEGETATION]],
+	"size": 2 * Vector2.ONE
   },
   Cell.MAYBE_SPIKES: {"chance": 0.0, "cell": [[Cell.SPIKES]], "size": Vector2.ONE}
 }
+"""
 
 var room_size := Vector2.ZERO
 var cell_size := Vector2.ZERO
@@ -29,29 +31,41 @@ var _rng := RandomNumberGenerator.new()
 
 # initialize the size parameters and get a random seed on init
 func _notification(what: int) -> void:
-    if what == Node.NOTIFICATION_INSTANCED:
-        _rng.randomize()
+	if what == Node.NOTIFICATION_INSTANCED:
+		_rng.randomize()
 
-        var room: TileMap = $TB.get_child(0)
-        room_size = room.get_used_rect().size
-        cell_size = room.cell_size
+		var room: TileMap = $LR.get_child(0)
+		room_size = room.get_used_rect().size
+		cell_size = room.cell_size
 
 # this func will return room data of a specific room type in the form of a Dictionary
+func get_room_data(type: int) -> Array:
+	var group: Node2D = get_child(type)
+	var index := _rng.randi_range(0, group.get_child_count() - 1)
+	var room: TileMap = group.get_child(index)
+
+	var data := []
+	for v in room.get_used_cells():
+		data.push_back({"offset": v, "cell": room.get_cellv(v)})
+	return data
+
+"""
 func get_room_data(type: int) -> Dictionary:
-    var group: Node2D = get_child(type)
-    var index := _rng.randi_range(0, group.get_child_count() - 1)
-    var room: TileMap = group.get_child(index)
+	var group: Node2D = get_child(type)
+	var index := _rng.randi_range(0, group.get_child_count() - 1)
+	var room: TileMap = group.get_child(index)
 
-    var data := {"objects": [], "tilemap": []}
-    for object in room.get_children():
-        data.objects.push_back(object)
-    
-    for v in room.get_used_cells():
-        var mapping: Dictionary = CELL_MAP[room.get_cellv(v)]
-        if _rng.randf() > mapping.chance:
-            continue
+	var data := {"objects": [], "tilemap": []}
+	for object in room.get_children():
+		data.objects.push_back(object)
+	
+	for v in room.get_used_cells():
+		var mapping: Dictionary = CELL_MAP[room.get_cellv(v)]
+		if _rng.randf() > mapping.chance:
+			continue
 
-        for x in range(mapping.size.x):
-            for y in range(mapping.size.y):
-                data.tilemap.push_back({"offset": v + Vector2(x, y), "cell": mapping.cell[x][y]})
-    return data
+		for x in range(mapping.size.x):
+			for y in range(mapping.size.y):
+				data.tilemap.push_back({"offset": v + Vector2(x, y), "cell": mapping.cell[x][y]})
+	return data
+"""
