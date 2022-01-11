@@ -6,11 +6,8 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 30, 30 )
 
-[node name="Player" type="KinematicBody2D" groups=["player"]]
+[node name="Player" type="KinematicBody2D"]
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
@@ -20,6 +17,3 @@ shape = SubResource( 1 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-__meta__ = {
-"_edit_group_": true
-}

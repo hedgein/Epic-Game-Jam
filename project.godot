@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "GenWalker",
 "language": "GDScript",
-"path": "res://Scripts/GenWalker.gd"
+"path": "res://Levels/Old Gen/GenWalker.gd"
 }, {
 "base": "",
 "class": "GitAPI",

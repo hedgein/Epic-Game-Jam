@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Levels/RandomWalker.gd" type="Script" id=1]
+
+[node name="RandomWalker" type="Node2D"]
+script = ExtResource( 1 )
+Rooms = null
+grid_size = null
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="TileMap" type="TileMap" parent="."]
+format = 1

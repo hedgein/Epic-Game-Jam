@@ -1,8 +1,9 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/GenWorld.gd" type="Script" id=1]
-[ext_resource path="res://Level.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Levels/Level.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/Camera2D.gd" type="Script" id=3]
+
 
 [node name="ProcWorld" type="Node2D"]
 position = Vector2( 2, 0 )
