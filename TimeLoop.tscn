@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Scenes/timer.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/TimeLoop.gd" type="Script" id=2]
+[ext_resource path="res://timer.gd" type="Script" id=1]
+[ext_resource path="res://TimeLoop.gd" type="Script" id=2]
+
 
 [node name="TimeLoop" type="Node"]
 script = ExtResource( 2 )

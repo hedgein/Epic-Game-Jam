@@ -6,9 +6,10 @@ signal path_completed
 const STEP := [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.UP]
 
 # Use the Rooms scene to generate rooms
-export (PackedScene) var Rooms := preload("Rooms.tscn")
+export (PackedScene) var Rooms := preload("res://Levels/Rooms.tscn")
 export var grid_size := Vector2(3, 5)
 
+var _player: KinematicBody2D = null
 var _rooms: Node2D = null
 var _rng := RandomNumberGenerator.new()
 var _state:= {}
@@ -16,7 +17,7 @@ var _horizontal_chance := 0.0
 
 onready var camera = $Camera2D
 onready var timer = $Timer
-onready var level: TileMap = $Level
+onready var level_main: TileMap = $Level/TileMapMain
 
 func _ready() -> void:
 	_rng.randomize()
@@ -38,12 +39,12 @@ func _setup_camera() -> void:
 func _generate_level() -> void:
 	_reset()
 	_update_start_position()
-	while _state.offset.y < grid_size.y:
+	_place_walls()
+	while _state.offset.y > -1:
 		_update_room_type()
 		_update_next_position()
 		_update_up_counter()
 
-	_place_walls()
 	_place_path_rooms()
 	_place_side_rooms()
 
@@ -66,20 +67,22 @@ func _reset() -> void:
 		for y in range(grid_size.y):
 			_state.empty_cells[Vector2(x,y)] = 0
 
+# Picks a random start position on the first row of the generation grid.
 func _update_start_position() -> void:
 	var x := _rng.randi_range(0, grid_size.x - 1)
-	_state.offset = Vector2(x, 0)
+	_state.offset = Vector2(x, grid_size.y - 1)
 
-# generating the first room type
+# Picks a room type to use on the cell the algorithm is currently visiting.
+# Uses some rules to prevent the room from blocking the player.
 func _update_room_type() -> void:
 	if not _state.path.empty():
 		var last: Dictionary = _state.path.back()
 
 		# special case for consecutive up rooms
-		if last.type in _rooms.BOTTOM_CLOSED and _state.delta.is_equal_approx(Vector2.UP):
-			var index := _rng.randi_range(0, _rooms.BOTTOM_OPENED.size() - 1)
+		if last.type in _rooms.TOP_CLOSED and _state.delta.is_equal_approx(Vector2.UP):
+			var index := _rng.randi_range(0, _rooms.TOP_OPENED.size() - 1)
 			var type: int = (
-				_rooms.BOTTOM_OPENED[index]
+				_rooms.TOP_OPENED[index]
 				if _state.up_counter < 2
 				else _rooms.RoomType.LRTB
 				)
@@ -88,13 +91,15 @@ func _update_room_type() -> void:
 	var type: int = (
 		_rooms.RoomType.LRB
 		if _state.delta.is_equal_approx(Vector2.UP)
-		else _rng.randi_range(1, _rooms.RoomType.size() - 1)
+		else _rng.randi_range(0, _rooms.RoomType.size() - 2) # excluse SIDE from range
 	)
 
 	_state.empty_cells.erase(_state.offset)
 	_state.path.push_back({"offset": _state.offset, "type": type})
 
-# advance the walker
+# Picks the direction in which the generator should move to place the next room. This is
+# semi-random: we pick a random direction only if that doesn't risk generating a broken path, and in
+# such a way we prevent backtracking.
 func _update_next_position() -> void:
 	# check to avoid moving to a visited cell
 	_state.random_index = (
@@ -110,57 +115,84 @@ func _update_next_position() -> void:
 		# move up when the 'left-boundry' of grid is reached
 		# random_index = 0 => STEP = LEFT
 		# random_index = 3 => STEP = UP
-		_state.random_index = 0 if _state.offset.x > 1 and horizontal_chance < _horizontal_chance else 3
+		_state.random_index = (
+			0 
+			if _state.offset.x > 1 and horizontal_chance < _horizontal_chance 
+			else 2)
 	elif _state.delta.is_equal_approx(Vector2.RIGHT):
 		# random_index = 1 => STEP = RIGHT
-		_state.random_index = 1 if _state.offset.x < grid_size.x - 1 and horizontal_chance < _horizontal_chance else 3
+		_state.random_index = (
+			1 
+			if _state.offset.x < grid_size.x - 1 and horizontal_chance < _horizontal_chance 
+			else 2)
 	else: 
 		if _state.offset.x > 0 and _state.offset.x < grid_size.x - 1: # in this case we've just moved up
 			_state.random_index = _rng.randi_range(0, STEP.size() - 1)
 		elif _state.offset.x == 0: # hit 'left-boundry'
-			_state.random_index = 1 if horizontal_chance < _horizontal_chance else 3
+			_state.random_index = 1 if horizontal_chance < _horizontal_chance else 2
 		elif _state.offset.x == grid_size.x - 1: # hit 'right-boundry'
-			_state.random_index = 0 if horizontal_chance < _horizontal_chance else 3
+			_state.random_index = 0 if horizontal_chance < _horizontal_chance else 2
 
 	_state.delta = STEP[_state.random_index]
-	_state.offset += _state.delta
+	# DEBUG 
+	print("Current walker position: ", _state.offset)
+	_state.offset += _state.delta # check here
 
+# Increments the `up_counter` every time the random walker moves downward.
 func _update_up_counter() -> void:
-	_state.down_counter = (
-		_state.down_counter + 1
-		if _state.delta.is_equal_approx(Vector2.DOWN)
+	_state.up_counter = (
+		_state.up_counter + 1
+		if _state.delta.is_equal_approx(Vector2.UP)
 		else 0
 	)
 
+# Walls here are used as the boarders for the entire level
+# TODO: Might have to be changed if tileset changes
 func _place_walls(type: int = 0) -> void:
 	var cell_grid_size := _grid_to_map(grid_size)
-	# create left and right walls
-	for x in [-1, cell_grid_size.x]:
-		for y in range(-1, cell_grid_size.y + 1):
-			level.set_cell(x, y, type)
-	
-	# create top and bottom floors
-	for x in range(cell_grid_size.x + 1):
-		for y in [-1, cell_grid_size.y]:
-			level.set_cell(x, y, type)
+
+	for x in [-2, -1, cell_grid_size.x, cell_grid_size.x + 1]:
+		for y in range(-2, cell_grid_size.y + 2):
+			level_main.set_cell(x, y, type)
+
+	for x in range(-1, cell_grid_size.x + 2):
+		for y in [-2, -1, cell_grid_size.y, cell_grid_size.y + 1]:
+			level_main.set_cell(x, y, type)
 
 func _place_path_rooms() -> void:
 	for path in _state.path:
 		yield(timer, "timeout") # visual for debug
-		_copy_room(path.offset, path.type)
+		_copy_room(path.offset, path.type, path == _state.path[0])
 	emit_signal("path_completed")
+	print("path_completed")
 
 func _place_side_rooms() -> void:
 	yield(self, "path_completed")
 	var rooms_max_index: int = _rooms.RoomType.size() - 1
 	for key in _state.empty_cells:
 		var type := _rng.randi_range(0, rooms_max_index)
-		_copy_room(key, type)
+		_copy_room(key, type, false)
+	level_main.update_bitmask_region()
 
-func _copy_room(offset: Vector2, type: int) -> void:
+# copys room from Rooms onto main scene
+func _copy_room(offset: Vector2, type: int, start: bool) -> void:
+	var world_offset := _grid_to_world(offset)
 	var map_offset := _grid_to_map(offset)
-	var data: Array = _rooms.get_room_data(type)
-	for item in data:
-		level.set_cellv(map_offset + item.offset, item.cell)
-
-
+	var data: Dictionary = _rooms.get_room_data(type)
+	
+	for object in data.objects:
+		if (not start and object.is_in_group("player")) or (start and object.is_in_group("enemy")):
+			continue
+		
+		var new_object: Node2D = object.duplicate()
+		new_object.position += world_offset
+		# level_extra.add_child(new_object)
+		
+		if start and new_object.is_in_group("player"):
+			_player = new_object
+	
+	for d in data.tilemap:
+		var tilemap := level_main 
+		# if we add a danger level
+		# if d.cell != _rooms.Cell.SPIKES else level_danger
+		tilemap.set_cellv(map_offset + d.offset, d.cell)

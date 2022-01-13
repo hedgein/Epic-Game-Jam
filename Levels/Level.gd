@@ -4,7 +4,6 @@ var _player: KinematicBody2D = null
 
 onready var extra: Node2D = $Extra
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
     for n in extra.get_children():
