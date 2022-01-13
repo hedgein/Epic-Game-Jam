@@ -1,6 +1,7 @@
 extends Node2D
 
 signal path_completed
+signal level_completed(player_position)
 
 # this step otptions here control direction and frequency
 const STEP := [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.UP]
@@ -14,37 +15,56 @@ var _rooms: Node2D = null
 var _rng := RandomNumberGenerator.new()
 var _state:= {}
 var _horizontal_chance := 0.0
+var _camera_limits := {}
+var _resolution := OS.window_size
 
-onready var camera = $Camera2D
-onready var timer = $Timer
+onready var scene_tree: SceneTree = get_tree()
+onready var camera: Camera2D = $Camera2D
+onready var tween: Tween = $Camera2D/Tween
 onready var level_main: TileMap = $Level/TileMapMain
+onready var level_danger: TileMap = $Level/TileMapDanger
+onready var level_extra: Node2D = $Level/Extra
+onready var timer: Timer = $Timer
+onready var background: ParallaxBackground = $ParallaxBackground
 
 func _ready() -> void:
 	_rng.randomize()
-	_rooms = Rooms.instance();
-	# calc the chance of moving horizontally
-	_horizontal_chance = 1.0 - STEP.count(Vector2.UP) / float(STEP.size())
+	_rooms = Rooms.instance()
+	_horizontal_chance = 1.0 - STEP.count(Vector2.DOWN) / float(STEP.size())
+	
+	_camera_limits = {
+		"min": level_main.map_to_world(-Vector2.ONE),
+		"max": level_main.map_to_world(_grid_to_map(grid_size) + Vector2.ONE)
+	}
 
-	_setup_camera()
+	camera.setup(_resolution, _grid_to_world(grid_size))
+	# TODO: FIX THIS LINE
+	#scene_tree.paused = true
 	_generate_level()
+	yield(self, "level_completed")
+	scene_tree.paused = false
 
-func _setup_camera() -> void:
-	var world_size := _grid_to_world(grid_size)
-	camera.position = world_size / 2
+func _on_Camera2D_zoom_changed(zoom: Vector2) -> void:
+	for n in background.get_children():
+		n.modulate.a = 1 / zoom.x
 
-	var ratio := world_size / OS.window_size
-	var zoom_max := max(ratio.x, ratio.y) + 1
-	camera.zoom = Vector2(zoom_max, zoom_max)
+
+func _on_Tween_tween_all_completed() -> void:
+	_player.get_node("RemoteTransform2D").remote_path = camera.get_path()
+	camera.limit_left = _camera_limits.min.x
+	camera.limit_top = _camera_limits.min.y
+	camera.limit_right = _camera_limits.max.x
+	camera.limit_bottom = _camera_limits.max.y
 
 func _generate_level() -> void:
 	_reset()
 	_update_start_position()
-	_place_walls()
 	while _state.offset.y > -1:
 		_update_room_type()
 		_update_next_position()
 		_update_up_counter()
 
+	_place_walls()
 	_place_path_rooms()
 	_place_side_rooms()
 
@@ -69,6 +89,7 @@ func _reset() -> void:
 
 # Picks a random start position on the first row of the generation grid.
 func _update_start_position() -> void:
+	# warning-ignore: narrowing_conversion
 	var x := _rng.randi_range(0, grid_size.x - 1)
 	_state.offset = Vector2(x, grid_size.y - 1)
 
@@ -135,7 +156,7 @@ func _update_next_position() -> void:
 
 	_state.delta = STEP[_state.random_index]
 	# DEBUG 
-	print("Current walker position: ", _state.offset)
+	# print("Current walker position: ", _state.offset)
 	_state.offset += _state.delta # check here
 
 # Increments the `up_counter` every time the random walker moves downward.
@@ -147,7 +168,6 @@ func _update_up_counter() -> void:
 	)
 
 # Walls here are used as the boarders for the entire level
-# TODO: Might have to be changed if tileset changes
 func _place_walls(type: int = 0) -> void:
 	var cell_grid_size := _grid_to_map(grid_size)
 
@@ -159,20 +179,22 @@ func _place_walls(type: int = 0) -> void:
 		for y in [-2, -1, cell_grid_size.y, cell_grid_size.y + 1]:
 			level_main.set_cell(x, y, type)
 
+# These rooms make up the unobstructed path generated in the beginning
 func _place_path_rooms() -> void:
 	for path in _state.path:
 		yield(timer, "timeout") # visual for debug
 		_copy_room(path.offset, path.type, path == _state.path[0])
 	emit_signal("path_completed")
-	print("path_completed")
 
+# These are all rooms not on the path
 func _place_side_rooms() -> void:
 	yield(self, "path_completed")
-	var rooms_max_index: int = _rooms.RoomType.size() - 1
 	for key in _state.empty_cells:
-		var type := _rng.randi_range(0, rooms_max_index)
+		var type := _rng.randi_range(0, _rooms.RoomType.size() - 1)
 		_copy_room(key, type, false)
+		
 	level_main.update_bitmask_region()
+	emit_signal("level_completed", _player.position)
 
 # copys room from Rooms onto main scene
 func _copy_room(offset: Vector2, type: int, start: bool) -> void:
@@ -180,16 +202,18 @@ func _copy_room(offset: Vector2, type: int, start: bool) -> void:
 	var map_offset := _grid_to_map(offset)
 	var data: Dictionary = _rooms.get_room_data(type)
 	
+	# copy over all objects in the room excluding player
 	for object in data.objects:
 		if (not start and object.is_in_group("player")) or (start and object.is_in_group("enemy")):
 			continue
 		
 		var new_object: Node2D = object.duplicate()
 		new_object.position += world_offset
-		# level_extra.add_child(new_object)
+		level_extra.add_child(new_object)
 		
 		if start and new_object.is_in_group("player"):
 			_player = new_object
+			print("Debug: player added in", offset)
 	
 	for d in data.tilemap:
 		var tilemap := level_main 
