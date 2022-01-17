@@ -38,8 +38,7 @@ func _ready() -> void:
 	}
 
 	camera.setup(_resolution, _grid_to_world(grid_size))
-	# TODO: FIX THIS LINE
-	#scene_tree.paused = true
+	scene_tree.paused = true
 	_generate_level()
 	yield(self, "level_completed")
 	scene_tree.paused = false
@@ -59,12 +58,13 @@ func _on_Tween_tween_all_completed() -> void:
 func _generate_level() -> void:
 	_reset()
 	_update_start_position()
+	_place_walls()
+	
 	while _state.offset.y > -1:
 		_update_room_type()
 		_update_next_position()
 		_update_up_counter()
 
-	_place_walls()
 	_place_path_rooms()
 	_place_side_rooms()
 
@@ -168,7 +168,7 @@ func _update_up_counter() -> void:
 	)
 
 # Walls here are used as the boarders for the entire level
-func _place_walls(type: int = 0) -> void:
+func _place_walls(type: int = 1) -> void:
 	var cell_grid_size := _grid_to_map(grid_size)
 
 	for x in [-2, -1, cell_grid_size.x, cell_grid_size.x + 1]:
@@ -211,6 +211,7 @@ func _copy_room(offset: Vector2, type: int, start: bool) -> void:
 		new_object.position += world_offset
 		level_extra.add_child(new_object)
 		
+		# code that puts the player in the world
 		if start and new_object.is_in_group("player"):
 			_player = new_object
 			print("Debug: player added in", offset)

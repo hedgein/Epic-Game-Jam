@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Art/Tileset/tileset.tres" type="TileSet" id=1]
+[ext_resource path="res://Levels/Level.gd" type="Script" id=2]
+[ext_resource path="res://Actors/Player.tscn" type="PackedScene" id=3]
+
+[node name="Level" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="TileMapMain" type="TileMap" parent="."]
+tile_set = ExtResource( 1 )
+collision_layer = 4
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( 131064, 3, 3, 65543, 3, 3, 196600, 3, 131075, 131079, 3, 131075, 262136, 1, 0, 196613, 0, 0, 196615, 1, 0, 327672, 1, 0, 327673, 2, 0, 327674, 3, 196608, 327675, 3, 196609, 327676, 3, 196609, 327677, 3, 196610, 327678, 2, 0, 327679, 2, 0, 262144, 2, 0, 262145, 2, 0, 262146, 3, 196608, 262147, 3, 196609, 262148, 3, 196609, 262149, 3, 196610, 262150, 2, 0, 262151, 1, 0 )
+
+[node name="TileMapDanger" type="TileMap" parent="."]
+tile_set = ExtResource( 1 )
+collision_layer = 2
+format = 1
+
+[node name="Extra" type="Node2D" parent="."]
+
+[node name="Player" parent="Extra" instance=ExtResource( 3 )]
+speed = Vector2( 650, 1000 )
+
+[node name="Camera2D" type="Camera2D" parent="Extra"]
+current = true

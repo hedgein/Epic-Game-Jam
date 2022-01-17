@@ -2,25 +2,18 @@ extends Node2D
 
 # This type must corispond to the room layout in the Rooms Scene 
 enum RoomType { LR, LRB, LRT, LRTB, SIDE }
-enum Cell { WALLS, GROUND, VEGETATION, SPIKES, MAYBE_GROUND, MAYBE_BUSH, MAYBE_SPIKES, MAYBE_TREE }
+# Tile types 
+enum Cell {FACE_SM, BLOCK1, BLOCK2, BLOCK_WALL, FACE_LG}
 
 const TOP_OPENED := [RoomType.LRT, RoomType.LRTB]
 const TOP_CLOSED := [RoomType.LR, RoomType.LRB]
 
 const CELL_MAP := {
-  Cell.WALLS: {"chance": 1.0, "cell": [[Cell.WALLS]], "size": Vector2.ONE},
-  Cell.GROUND: {"chance": 1.0, "cell": [[Cell.GROUND]], "size": Vector2.ONE},
-  Cell.VEGETATION: {"chance": 0.0, "cell": [[Cell.VEGETATION]], "size": Vector2.ONE},
-  Cell.SPIKES: {"chance": 0.0, "cell": [[Cell.SPIKES]], "size": Vector2.ONE},
-  Cell.MAYBE_GROUND: {"chance": 0.7, "cell": [[Cell.GROUND]], "size": Vector2.ONE},
-  Cell.MAYBE_BUSH: {"chance": 0.0, "cell": [[Cell.VEGETATION]], "size": Vector2.ONE},
-  Cell.MAYBE_SPIKES: {"chance": 0.2, "cell": [[Cell.SPIKES]], "size": Vector2.ONE},
-  Cell.MAYBE_TREE: # beeg tiles example
-  {
-	"chance": 0.0,
-	"cell": [[Cell.VEGETATION, Cell.VEGETATION], [Cell.VEGETATION, Cell.VEGETATION]],
-	"size": 2 * Vector2.ONE
-  }
+  Cell.FACE_SM: {"chance": 1.0, "cell": [[Cell.FACE_SM]], "size": Vector2.ONE},
+  Cell.BLOCK1: {"chance": 1.0, "cell": [[Cell.BLOCK1]], "size": Vector2.ONE},
+  Cell.BLOCK2: {"chance": 1.0, "cell": [[Cell.BLOCK2]], "size": Vector2.ONE},
+  Cell.BLOCK_WALL: {"chance": 1.0, "cell": [[Cell.BLOCK_WALL]], "size": Vector2.ONE},
+  Cell.FACE_LG: {"chance": 1.0, "cell": [[Cell.FACE_LG]], "size": Vector2(3, 3)}
 }
 
 var room_size := Vector2.ZERO
@@ -50,6 +43,7 @@ func get_room_data(type: int) -> Dictionary:
 	
 	for v in room.get_used_cells():
 		if not room.get_cellv(v) in range(0, CELL_MAP.size() - 1):
+			print("Could not read cellv:", v)
 			continue
 		var mapping: Dictionary = CELL_MAP[room.get_cellv(v)]
 		if _rng.randf() > mapping.chance:
