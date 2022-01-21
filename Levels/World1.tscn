@@ -20,7 +20,7 @@ script = ExtResource( 5 )
 position = Vector2( -18, 0 )
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.5
+wait_time = 0.001
 autostart = true
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]

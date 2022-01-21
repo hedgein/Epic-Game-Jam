@@ -38,7 +38,7 @@ func _ready() -> void:
 	}
 
 	camera.setup(_resolution, _grid_to_world(grid_size))
-	scene_tree.paused = true
+	# scene_tree.paused = true
 	_generate_level()
 	yield(self, "level_completed")
 	scene_tree.paused = false
