@@ -17,11 +17,6 @@ animations = [ {
 }, {
 "frames": [ ExtResource( 5 ) ],
 "loop": true,
-"name": "idle_right",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 5 ) ],
-"loop": true,
 "name": "idle_left",
 "speed": 5.0
 }, {
@@ -29,10 +24,15 @@ animations = [ {
 "loop": true,
 "name": "run_left",
 "speed": 12.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "idle_right",
+"speed": 5.0
 } ]
 
-[sub_resource type="CircleShape2D" id=3]
-radius = 24.0
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 19, 18 )
 
 [node name="Player" type="KinematicBody2D" groups=["player"]]
 collision_mask = 4
@@ -48,11 +48,12 @@ visible = false
 scale = Vector2( 0.5, 0.5 )
 frames = SubResource( 2 )
 animation = "run_left"
-frame = 4
+frame = 1
 playing = true
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 1, 4 )
 shape = SubResource( 3 )
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
