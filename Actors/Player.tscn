@@ -50,7 +50,6 @@ frames = SubResource( 2 )
 animation = "run_left"
 frame = 1
 playing = true
-flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 1, 4 )

@@ -2,14 +2,16 @@ extends "Actor.gd"
 
 signal collided_with_item
 
-onready var walljump_tween = $WallJumpTween
-## set up basic movement parameters
-# export (int) var jump_speed = -400
+onready var animated_sprite = $AnimatedSprite
 
 # additional movement parameters
 export (float, 0 , 1.0) var friction = 0.1
-export (float, 0 , 1.0) var acceleration = 0.25
+export (float, 0 , 1.0) var acceleration = 0.1
+export (float, 0, 1.0) var top_speed_accel = 0.1
 export (float, 0 , 1.0) var grab_friction = 1.0
+export (float, 0, 1.0) var deceleration = 0.17
+var jump_accel = 0.135
+var speed_factor = 1.2
 
 func get_input_grab():
     #Setup blank direction
@@ -17,9 +19,11 @@ func get_input_grab():
         
     if Input.is_action_pressed("move_up"):
         dir = -1.0
+        velocity.y = lerp(velocity.y, dir * (speed.y / 2.0), acceleration)
 
     if Input.is_action_pressed("move_down"):
         dir =  1.0
+        velocity.y = lerp(velocity.y, dir * (speed.y / 2.0), acceleration)
             
     if dir != 0:
         velocity.y = lerp(velocity.y, dir * (speed.y / 2.0), acceleration)
@@ -38,23 +42,55 @@ func get_input_release(normal):
     else:
         velocity.x = lerp(velocity.x, 0, friction)
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
     if Input.is_action_pressed("grab") and is_on_wall():
         get_input_grab()
         var wall_collision = get_last_slide_collision()
         
         # grab and interpret wall_collision normal
-        if wall_collision.normal == Vector2(1,0): 
-            if Input.is_action_pressed("move_right"):  
-                velocity.y = lerp(velocity.y, -3 * speed.y, acceleration)
+        #right wall grabbed
         if wall_collision.normal == Vector2(-1,0):
             if Input.is_action_pressed("move_left"):
-                velocity.y = lerp(velocity.y, -3 * speed.y, acceleration)
+                velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
+        #left wall grabbed
+        if wall_collision.normal == Vector2(1,0): 
+            if Input.is_action_pressed("move_right"):  
+                velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
+                
         
-
-    var direction := _get_input()
-    var is_jump_interrupted = Input.is_action_just_released("jump") and velocity.y < 0.0
-    velocity = calc_velocity(velocity, direction, speed, is_jump_interrupted)
+        
+    if Input.is_action_pressed("move_right"):
+        animated_sprite.play("run_right")
+        animated_sprite.flip_h = false
+        var increment = speed_factor * speed.x / 4.2
+        velocity.x += increment
+        if velocity.x >= (speed_factor * speed.x):
+            print("top speed reached")
+            velocity.x = speed_factor * speed.x
+        print(velocity.x)
+    else:
+        animated_sprite.play("idle_right")
+        velocity.x = lerp(velocity.x, 0.0, deceleration)
+        
+    
+    if Input.is_action_pressed("move_left"):
+        animated_sprite.play("run_left")
+        animated_sprite.flip_h = true
+        var increment = speed_factor * speed.x / 4.2
+        velocity.x -= increment
+        if velocity.x <= (speed_factor * -speed.x):
+            print("top speed reached")
+            velocity.x = speed_factor * -speed.x
+        print(velocity.x)
+    else:
+        animated_sprite.play("idle_left")
+        velocity.x = lerp(velocity.x, 0.0, deceleration)
+    
+    if Input.is_action_just_pressed("jump"):
+        velocity.y = lerp(velocity.y, 5 * -speed.y, jump_accel)
+#    var direction := _get_input()
+#    var is_jump_interrupted = Input.is_action_just_released("jump") and velocity.y < 0.0
+#    velocity = calc_velocity(velocity, direction, speed, is_jump_interrupted)
     velocity = move_and_slide(velocity, FLOOR_NORMAL)
     
 func _get_input() -> Vector2:
@@ -77,3 +113,5 @@ func calc_velocity(
         velocity.y = 0.0
     
     return velocity
+
+
