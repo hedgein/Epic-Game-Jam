@@ -55,6 +55,7 @@ func get_input_grab_over(wall_check):
     elif Input.is_action_pressed("move_down"):
         velocity.y = lerp(velocity.y, (speed.y / 2.0), acceleration)
 
+
     else:
         velocity.y = lerp(velocity.y, 0, grab_friction)
         

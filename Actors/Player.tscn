@@ -12,13 +12,15 @@
 animations = [ {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
 "loop": true,
-"name": "run_right",
+"name": "run_left",
 "speed": 12.0
 }, {
+
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run_left",
 "speed": 12.0
+
 }, {
 "frames": [ ExtResource( 5 ) ],
 "loop": true,
@@ -29,6 +31,11 @@ animations = [ {
 "loop": true,
 "name": "idle_right",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "run_right",
+"speed": 12.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=3]
@@ -40,6 +47,7 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
 }
+gravity = 1500
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.5, 0.5 )
