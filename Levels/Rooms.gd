@@ -23,33 +23,33 @@ var _rng := RandomNumberGenerator.new()
 
 # initialize the size parameters and get a random seed on init
 func _notification(what: int) -> void:
-	if what == Node.NOTIFICATION_INSTANCED:
-		_rng.randomize()
+    if what == Node.NOTIFICATION_INSTANCED:
+        _rng.randomize()
 
-		var room: TileMap = $LR.get_child(0)
-		room_size = room.get_used_rect().size
-		cell_size = room.cell_size
+        var room: TileMap = $LR.get_child(0)
+        room_size = room.get_used_rect().size
+        cell_size = room.cell_size
 
 
 # this func will return room data of a specific room type in the form of a Dictionary
 func get_room_data(type: int) -> Dictionary:
-	var group: Node2D = get_child(type)
-	var index := _rng.randi_range(0, group.get_child_count() - 1)
-	var room: TileMap = group.get_child(index)
+    var group: Node2D = get_child(type)
+    var index := _rng.randi_range(0, group.get_child_count() - 1)
+    var room: TileMap = group.get_child(index)
 
-	var data := {"objects": [], "tilemap": []}
-	for object in room.get_children():
-		data.objects.push_back(object)
-	
-	for v in room.get_used_cells():
-		if not room.get_cellv(v) in range(0, CELL_MAP.size() - 1):
-			print("Could not read cellv:", v)
-			continue
-		var mapping: Dictionary = CELL_MAP[room.get_cellv(v)]
-		if _rng.randf() > mapping.chance:
-			continue
+    var data := {"objects": [], "tilemap": []}
+    for object in room.get_children():
+        data.objects.push_back(object)
+    
+    for v in room.get_used_cells():
+        if not room.get_cellv(v) in range(0, CELL_MAP.size() - 1):
+            #print("Could not read cellv:", v)
+            continue
+        var mapping: Dictionary = CELL_MAP[room.get_cellv(v)]
+        if _rng.randf() > mapping.chance:
+            continue
 
-		for x in range(mapping.size.x):
-			for y in range(mapping.size.y):
-				data.tilemap.push_back({"offset": v + Vector2(x, y), "cell": mapping.cell[x][y]})
-	return data
+        for x in range(mapping.size.x):
+            for y in range(mapping.size.y):
+                data.tilemap.push_back({"offset": v + Vector2(x, y), "cell": mapping.cell[x][y]})
+    return data
