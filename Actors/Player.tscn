@@ -15,15 +15,15 @@ animations = [ {
 "name": "run_right",
 "speed": 12.0
 }, {
-"frames": [ ExtResource( 5 ) ],
-"loop": true,
-"name": "idle_left",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run_left",
 "speed": 12.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "idle_left",
+"speed": 5.0
 }, {
 "frames": [ ExtResource( 5 ) ],
 "loop": true,
@@ -55,7 +55,11 @@ shape = SubResource( 3 )
 
 [node name="Tween" type="Tween" parent="."]
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
-position = Vector2( 0, 15 )
+[node name="GrabRay" type="RayCast2D" parent="."]
+position = Vector2( 0, 25 )
 enabled = true
+cast_to = Vector2( 50, 0 )
+
+[node name="TopGrabRay" type="RayCast2D" parent="."]
+position = Vector2( 0, -12 )
 cast_to = Vector2( 50, 0 )
