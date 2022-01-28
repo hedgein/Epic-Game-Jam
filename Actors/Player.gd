@@ -3,7 +3,8 @@ extends "Actor.gd"
 signal collided_with_item
 
 onready var animated_sprite = $AnimatedSprite
-onready var raycast = $RayCast2D
+onready var grab_ray = $GrabRay
+onready var top_ray  = $TopGrabRay
 
 # additional movement parameters
 export (float, 0 , 1.0) var friction = 0.1
@@ -15,96 +16,121 @@ var jump_accel = 0.135
 var speed_factor = 1.0
 
 var is_on_wall = false
+var is_at_corner = false
 
 func get_input_grab():
-
+    
+    #implement up/down climbing mechanic
     if Input.is_action_pressed("move_up"):
         velocity.y = lerp(velocity.y, -(speed.y / 2.0), acceleration)
-        print(velocity.y)
     elif Input.is_action_pressed("move_down"):
         velocity.y = lerp(velocity.y, (speed.y / 2.0), acceleration)
-        print(velocity.y)
     else:
         velocity.y = lerp(velocity.y, 0, grab_friction)
+        
+func get_input_wall_jump(wall_check):
+        #right wall grabbed
+    if wall_check.normal == Vector2(-1,0):
+        if Input.is_action_pressed("move_left"):
+            velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
+    #left wall grabbed
+    if wall_check.normal == Vector2(1,0): 
+        if Input.is_action_pressed("move_right"):  
+            velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
+            
+func get_input_grab_over(wall_check):
+    #implement up/down climbing mechanic
 
+    var dir = 0
+    #right wall grabbed
+    if wall_check.normal == Vector2(-1,0):
+        dir = 1
+    elif wall_check.normal == Vector2(1,0):
+        dir = -1
+    
+    #implement up/down climbing mechanic
+    if Input.is_action_pressed("move_up"):
+        velocity.y = lerp(velocity.y, -(speed.y / 4.0), acceleration)
+        velocity.x += dir * (speed.x / 4.0)
+    elif Input.is_action_pressed("move_down"):
+        velocity.y = lerp(velocity.y, (speed.y / 2.0), acceleration)
+
+
+    else:
+        velocity.y = lerp(velocity.y, 0, grab_friction)
+        
 func _physics_process(delta: float) -> void:
+    
+    #setup raycasting
     var space_state = get_world_2d().direct_space_state
+    var result = space_state.intersect_ray(grab_ray.global_position, grab_ray.global_position + grab_ray.cast_to, [self])
+    var top_result = space_state.intersect_ray(top_ray.global_position, top_ray.global_position + top_ray.cast_to, [self])
     
-    var result = space_state.intersect_ray(global_position, global_position + raycast.cast_to, [self])
-    
-    
+    #if returned result is not empty, player is_on_wall
     if result.size() != 0:
         is_on_wall = true
+
     else:
         is_on_wall = false
         
-    if is_on_wall and Input.is_action_pressed("grab"):
+    #if returned top_result is not empty, player is_at_corner
+    if top_result.size() !=0:
+        is_at_corner = true
+    else:
+        is_at_corner = false
+        
+    #check for valid result to use as weal check
+    var wall_check = result
+    if !is_on_wall:
+        wall_check = top_result 
+    #grab mechanic
+    if (is_on_wall or is_at_corner) and Input.is_action_pressed("grab"):
+        #climb up and down while grabbing
         get_input_grab()
-
-        # grab and interpret wall_collision normal
-        #right wall grabbed
-        if result.normal == Vector2(-1,0):
-            if Input.is_action_pressed("move_left"):
-                velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
-        #left wall grabbed
-        if result.normal == Vector2(1,0): 
-            if Input.is_action_pressed("move_right"):  
-                velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
-                
+        
+        #implement wall_jump
+        get_input_wall_jump(wall_check)
+        
+    #if at corner while grabbing
+    if Input.is_action_pressed("grab") and (is_on_wall and top_result.size() == 0):
+       #implement getting over corner
+        get_input_grab_over(wall_check)
+            
+    #setup animations based on left/right movements
     if Input.is_action_just_pressed("move_right"):
-        print("run right")
         animated_sprite.flip_h = false
         animated_sprite.play("run_right")
-        raycast.cast_to = Vector2(25, 0)
+        grab_ray.cast_to = Vector2(25, 0)
+        top_ray.cast_to = Vector2(25,0)
     elif Input.is_action_just_pressed("move_left"):
         animated_sprite.flip_h = true
         animated_sprite.play("run_left")
-        raycast.cast_to = Vector2(-25, 0)
+        grab_ray.cast_to = Vector2(-25, 0)
+        top_ray.cast_to = Vector2(-25,0)
     if Input.is_action_just_released("move_right"):
         animated_sprite.play("idle_right")
     elif Input.is_action_just_released("move_left"):
         animated_sprite.play("idle_left")
     
+    #implement  move character to left/right with 6 frame acceleration to top speed
     if Input.is_action_pressed("move_right"):
         var increment = speed_factor * speed.x / 4.2
         velocity.x += increment
         if velocity.x >= (speed_factor * speed.x):
             velocity.x = speed_factor * speed.x
-    else:
-        #animated_sprite.stop()
-        velocity.x = lerp(velocity.x, 0.0, deceleration)
-        
-    
-    if Input.is_action_pressed("move_left"):
+    elif Input.is_action_pressed("move_left"):
         var increment = speed_factor * speed.x / 4.2
         velocity.x -= increment
         if velocity.x <= (speed_factor * -speed.x):
             velocity.x = speed_factor * -speed.x
     else:
-        #animated_sprite.stop()
         velocity.x = lerp(velocity.x, 0.0, deceleration)
     
+    #implement jump
     if is_on_floor() and Input.is_action_just_pressed("jump"):
         velocity.y = lerp(velocity.y, 5 * -speed.y, jump_accel)
+        
+    #apply velocity to character
     velocity = move_and_slide(velocity, FLOOR_NORMAL)
     
-func _get_input() -> Vector2:
-    var x := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-    var y := (
-        -Input.get_action_strength("jump")
-        if is_on_floor() and Input.is_action_just_pressed("jump")
-        else 0.0
-    )
-    return Vector2(x, y)
 
-func calc_velocity(
-    velocity: Vector2, direction: Vector2, speed: Vector2, is_jump_interrupted: bool
-    ) -> Vector2:
-    velocity.x = speed.x * direction.x
-
-    if direction.y != 0.0:
-        velocity.y = speed.y * direction.y
-    if is_jump_interrupted:
-        velocity.y = 0.0
-    
-    return velocity

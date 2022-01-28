@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Levels/RandomWalker.gd" type="Script" id=1]
 [ext_resource path="res://Levels/Level.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Art/ParallaxBG/background-hills.svg" type="Texture" id=3]
 [ext_resource path="res://Art/ParallaxBG/background-trees.svg" type="Texture" id=4]
 [ext_resource path="res://Camera2D.gd" type="Script" id=5]
+[ext_resource path="res://TimeLoop.tscn" type="PackedScene" id=6]
 
 [node name="RandomWalker" type="Node2D"]
 script = ExtResource( 1 )
@@ -16,12 +17,12 @@ script = ExtResource( 5 )
 
 [node name="Tween" type="Tween" parent="Camera2D"]
 
-[node name="Level" parent="." instance=ExtResource( 2 )]
-position = Vector2( -18, 0 )
-
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.001
 autostart = true
+
+[node name="Level" parent="." instance=ExtResource( 2 )]
+position = Vector2( -18, 0 )
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
@@ -38,6 +39,8 @@ position = Vector2( 621, -25 )
 texture = ExtResource( 4 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 800, 1200 )
+
+[node name="TimeLoop" parent="." instance=ExtResource( 6 )]
 
 [connection signal="level_completed" from="." to="Camera2D" method="_on_LevelGenerator_level_completed"]
 [connection signal="zoom_changed" from="Camera2D" to="." method="_on_Camera2D_zoom_changed"]
