@@ -2,9 +2,6 @@ extends "Actor.gd"
 
 signal collided_with_item
 
-## set up basic movement parameters
-# export (int) var jump_speed = -400
-
 # additional movement parameters
 export (float, 0 , 1.0) var friction = 0.1
 export (float, 0 , 1.0) var acceleration = 0.25
