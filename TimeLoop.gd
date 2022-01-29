@@ -6,11 +6,12 @@ signal restart
 onready var timerLabel = $CanvasLayer/timerLabel
 onready var timeLoop = $timeLoop
 
+var total = 30.0
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    timeLoop.start(10.0)
+    timeLoop.start(total)
     timerLabel.text = "START"
     
 
@@ -21,7 +22,9 @@ func _process(_delta):
     var timeInMins = timeLeft / 60
     var timeInSeconds = timeLeft as int % 60
     var format_string
-    if (timeInSeconds  < 10): 
+    if (timeInSeconds  < total): 
+        format_string = "%d:%d"
+    elif (timeInSeconds < 10):
         format_string = "%d:0%d"
     else:
         format_string = "%d:%d"

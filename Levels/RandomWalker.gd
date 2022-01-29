@@ -17,6 +17,7 @@ var _state:= {}
 var _horizontal_chance := 0.0
 var _camera_limits := {}
 var _resolution := OS.window_size
+var _player_spawn: Vector2 = Vector2(0.0, 0.0)
 
 onready var scene_tree: SceneTree = get_tree()
 onready var camera: Camera2D = $Camera2D
@@ -26,8 +27,11 @@ onready var level_danger: TileMap = $Level/TileMapDanger
 onready var level_extra: Node2D = $Level/Extra
 onready var timer: Timer = $Timer
 onready var background: ParallaxBackground = $ParallaxBackground
+onready var timeloop = $TimeLoop
 
 func _ready() -> void:
+    timeloop.connect("restart", self, "on_Timer_restart")
+    
     _rng.randomize()
     _rooms = Rooms.instance()
     _horizontal_chance = 1.0 - STEP.count(Vector2.DOWN) / float(STEP.size())
@@ -214,6 +218,7 @@ func _copy_room(offset: Vector2, type: int, start: bool) -> void:
         # code that puts the player in the world
         if start and new_object.is_in_group("player"):
             _player = new_object
+            _player_spawn = _player.global_position
             print("Debug: player added in", offset)
     
     for d in data.tilemap:
@@ -221,3 +226,7 @@ func _copy_room(offset: Vector2, type: int, start: bool) -> void:
         # if we add a danger level
         # if d.cell != _rooms.Cell.SPIKES else level_danger
         tilemap.set_cellv(map_offset + d.offset, d.cell)
+
+func on_Timer_restart():
+    print("restarted player position")
+    _player.global_position = _player_spawn 

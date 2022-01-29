@@ -8,7 +8,7 @@ onready var top_ray  = $TopGrabRay
 
 # additional movement parameters
 export (float, 0 , 1.0) var friction = 0.1
-export (float, 0 , 1.0) var acceleration = 0.15
+export (float, 0 , 1.0) var acceleration = 0.25
 export (float, 0, 1.0) var top_speed_accel = 0.1
 export (float, 0 , 1.0) var grab_friction = 1.0
 export (float, 0, 1.0) var deceleration = 0.17
@@ -22,9 +22,9 @@ func get_input_grab():
     
     #implement up/down climbing mechanic
     if Input.is_action_pressed("move_up"):
-        velocity.y = lerp(velocity.y, -(speed.y / 2.0), acceleration)
+        velocity.y = lerp(velocity.y, -(speed.y / 3.0), acceleration)
     elif Input.is_action_pressed("move_down"):
-        velocity.y = lerp(velocity.y, (speed.y / 2.0), acceleration)
+        velocity.y = lerp(velocity.y, (speed.y / 3.0), acceleration)
     else:
         velocity.y = lerp(velocity.y, 0, grab_friction)
         
@@ -32,11 +32,11 @@ func get_input_wall_jump(wall_check):
         #right wall grabbed
     if wall_check.normal == Vector2(-1,0):
         if Input.is_action_pressed("move_left"):
-            velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
+            velocity.y = lerp(velocity.y, -3.7 * speed.y, jump_accel)
     #left wall grabbed
     if wall_check.normal == Vector2(1,0): 
         if Input.is_action_pressed("move_right"):  
-            velocity.y = lerp(velocity.y, -4 * speed.y, jump_accel)
+            velocity.y = lerp(velocity.y, -3.7 * speed.y, jump_accel)
             
 func get_input_grab_over(wall_check):
     #implement up/down climbing mechanic
@@ -50,7 +50,7 @@ func get_input_grab_over(wall_check):
     
     #implement up/down climbing mechanic
     if Input.is_action_pressed("move_up"):
-        velocity.y = lerp(velocity.y, -(speed.y / 4.0), acceleration)
+        velocity.y = lerp(velocity.y, -(speed.y / 5.0), acceleration)
         velocity.x += dir * (speed.x / 4.0)
     elif Input.is_action_pressed("move_down"):
         velocity.y = lerp(velocity.y, (speed.y / 2.0), acceleration)
@@ -98,37 +98,35 @@ func _physics_process(delta: float) -> void:
             
     #setup animations based on left/right movements
     if Input.is_action_just_pressed("move_right"):
-        animated_sprite.flip_h = false
         animated_sprite.play("run_right")
         grab_ray.cast_to = Vector2(25, 0)
         top_ray.cast_to = Vector2(25,0)
     elif Input.is_action_just_pressed("move_left"):
-        animated_sprite.flip_h = true
         animated_sprite.play("run_left")
         grab_ray.cast_to = Vector2(-25, 0)
         top_ray.cast_to = Vector2(-25,0)
-    if Input.is_action_just_released("move_right"):
-        animated_sprite.play("idle_right")
-    elif Input.is_action_just_released("move_left"):
-        animated_sprite.play("idle_left")
+
     
     #implement  move character to left/right with 6 frame acceleration to top speed
     if Input.is_action_pressed("move_right"):
+        animated_sprite.flip_h = false
         var increment = speed_factor * speed.x / 4.2
         velocity.x += increment
         if velocity.x >= (speed_factor * speed.x):
             velocity.x = speed_factor * speed.x
     elif Input.is_action_pressed("move_left"):
+        animated_sprite.flip_h = true
         var increment = speed_factor * speed.x / 4.2
         velocity.x -= increment
         if velocity.x <= (speed_factor * -speed.x):
             velocity.x = speed_factor * -speed.x
     else:
+        animated_sprite.play("idle_left")
         velocity.x = lerp(velocity.x, 0.0, deceleration)
     
     #implement jump
     if is_on_floor() and Input.is_action_just_pressed("jump"):
-        velocity.y = lerp(velocity.y, 5 * -speed.y, jump_accel)
+        velocity.y = lerp(velocity.y, 3.5 * -speed.y, jump_accel)
         
     #apply velocity to character
     velocity = move_and_slide(velocity, FLOOR_NORMAL)
