@@ -1,24 +1,65 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://timer.gd" type="Script" id=1]
 [ext_resource path="res://TimeLoop.gd" type="Script" id=2]
+[ext_resource path="res://LivesLabel.gd" type="Script" id=3]
+[ext_resource path="res://PointsLabel.gd" type="Script" id=4]
+[ext_resource path="res://Art/Menu/AldotheApache.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 30
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 30
+font_data = ExtResource( 5 )
 
 [node name="TimeLoop" type="Node"]
 script = ExtResource( 2 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="timerLabel" type="RichTextLabel" parent="CanvasLayer"]
-anchor_right = 1.0
-anchor_bottom = 0.844
-margin_left = 940.0
-margin_top = 19.0
-margin_right = -20.0
-margin_bottom = -449.4
-script = ExtResource( 1 )
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+margin_left = 808.0
+margin_top = 11.0
+margin_right = 1014.0
+margin_bottom = 65.0
+custom_constants/separation = 35
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="PointsLabel" type="Label" parent="CanvasLayer/HBoxContainer"]
+margin_top = 14.0
+margin_right = 37.0
+margin_bottom = 39.0
+custom_fonts/font = SubResource( 1 )
+text = "0/5"
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthLabel" type="Label" parent="CanvasLayer/HBoxContainer"]
+margin_left = 72.0
+margin_top = 14.0
+margin_right = 109.0
+margin_bottom = 39.0
+custom_fonts/font = SubResource( 1 )
+text = "0/5"
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="timerLabel" type="Label" parent="CanvasLayer/HBoxContainer"]
+margin_left = 144.0
+margin_top = 14.0
+margin_right = 192.0
+margin_bottom = 39.0
+custom_fonts/font = SubResource( 2 )
+text = "0:00"
+script = ExtResource( 1 )
 
 [node name="timeLoop" type="Timer" parent="."]
 autostart = true

@@ -1,6 +1,7 @@
 extends "Actor.gd"
 
 signal collided_with_item
+signal collided_with_enemy
 
 onready var animated_sprite = $AnimatedSprite
 onready var grab_ray = $GrabRay
@@ -17,6 +18,11 @@ var speed_factor = 1.0
 
 var is_on_wall = false
 var is_at_corner = false
+
+var double_jump = false
+
+func _ready():
+    SignalBus.connect("item_picked_up", self, "on_Item_picked_up")
 
 func get_input_grab():
     
@@ -127,8 +133,14 @@ func _physics_process(delta: float) -> void:
     #implement jump
     if is_on_floor() and Input.is_action_just_pressed("jump"):
         velocity.y = lerp(velocity.y, 3.5 * -speed.y, jump_accel)
+        double_jump = true
+    if !is_on_floor() and double_jump and Input.is_action_just_pressed("jump"):
+        velocity.y = lerp(velocity.y, 3.5 * -speed.y, jump_accel)
+        double_jump = false
+    
         
     #apply velocity to character
     velocity = move_and_slide(velocity, FLOOR_NORMAL)
-    
 
+func on_Item_picked_up():
+    pass

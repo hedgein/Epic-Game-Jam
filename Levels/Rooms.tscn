@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Art/Tileset/tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://Levels/Rooms.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Actors/Enemies/Cogmine.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Actors/Enemies/Firefly.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Actors/Enemies/Snaptrap.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Item.tscn" type="PackedScene" id=8]
 
 [node name="Rooms" type="Node2D"]
 position = Vector2( 0, 1 )
@@ -41,6 +42,8 @@ position = Vector2( 242, 221 )
 [node name="KinematicBody2D" parent="LR/1/Player" instance=ExtResource( 5 )]
 position = Vector2( 493, 386 )
 
+[node name="Item" parent="LR/1" instance=ExtResource( 8 )]
+
 [node name="2" type="TileMap" parent="LR"]
 visible = false
 tile_set = ExtResource( 1 )
@@ -55,7 +58,6 @@ position = Vector2( 256, 384 )
 position = Vector2( 617, 213 )
 
 [node name="LRB" type="Node2D" parent="."]
-visible = false
 
 [node name="0" type="TileMap" parent="LRB"]
 visible = false
@@ -93,6 +95,8 @@ position = Vector2( 320, 373 )
 [node name="Cogmine" parent="LRB/2" instance=ExtResource( 5 )]
 position = Vector2( 542, 555 )
 
+[node name="Item" parent="LRB/2" instance=ExtResource( 8 )]
+
 [node name="3" type="TileMap" parent="LRB"]
 visible = false
 tile_set = ExtResource( 1 )
@@ -106,6 +110,7 @@ position = Vector2( 257, 403 )
 position = Vector2( 825, 332 )
 
 [node name="4" type="TileMap" parent="LRB"]
+visible = false
 tile_set = ExtResource( 1 )
 format = 1
 tile_data = PoolIntArray( 0, 1, 0, 1, 1073741827, 196608, 2, 1073741827, 196609, 3, 1073741827, 196609, 4, 1073741827, 196609, 5, 1073741827, 196609, 6, 1073741827, 196609, 7, 1073741827, 196609, 8, 1073741827, 196609, 9, 1073741827, 196609, 10, 1073741827, 196609, 11, 1073741827, 196609, 12, 1073741827, 196609, 13, 1073741827, 196609, 14, 1073741827, 196610, 15, 1073741825, 0, 65536, 11, 65536, 65539, 11, 131074, 65550, 11, 0, 65551, 11, 65537, 65552, 11, 65538, 131072, 11, 131072, 131073, 11, 131073, 131086, 11, 131072, 131087, 11, 131073, 131088, 11, 131074, 262148, 536870913, 0, 262149, 536870913, 0, 262150, 536870913, 0, 262154, 536870913, 0, 262155, 536870913, 0, 262156, 536870913, 0, 458752, 536870914, 0, 458753, 536870914, 0, 458754, 536870914, 0, 458766, 536870914, 0, 458767, 536870914, 0, 458768, 536870914, 0, 524288, 536870913, 0, 524289, 536870913, 0, 524303, 536870913, 0, 524304, 536870913, 0, 655367, 536870913, 0, 655368, 536870913, 0, 655369, 536870913, 0 )
@@ -116,8 +121,9 @@ position = Vector2( 930, 415 )
 [node name="Buzzdrone" parent="LRB/4" instance=ExtResource( 4 )]
 position = Vector2( 521, 434 )
 
+[node name="Item" parent="LRB/4" instance=ExtResource( 8 )]
+
 [node name="LRT" type="Node2D" parent="."]
-visible = false
 
 [node name="0" type="TileMap" parent="LRT"]
 visible = false
@@ -140,6 +146,9 @@ position = Vector2( 414, 225 )
 [node name="Firefly" parent="LRT/1" instance=ExtResource( 6 )]
 position = Vector2( 849, 177 )
 
+[node name="Item" parent="LRT/1" instance=ExtResource( 8 )]
+visible = false
+
 [node name="2" type="TileMap" parent="LRT"]
 visible = false
 tile_set = ExtResource( 1 )
@@ -158,6 +167,8 @@ tile_data = PoolIntArray( 0, 3, 0, 1, 3, 1, 2, 3, 1, 3, 3, 1, 4, 3, 1, 5, 3, 1, 
 [node name="Player" parent="LRT/3" instance=ExtResource( 3 )]
 position = Vector2( 933, 411 )
 
+[node name="Item" parent="LRT/3" instance=ExtResource( 8 )]
+
 [node name="4" type="TileMap" parent="LRT"]
 visible = false
 tile_set = ExtResource( 1 )
@@ -171,12 +182,15 @@ position = Vector2( 148, 582 )
 position = Vector2( 798, 619 )
 
 [node name="5" type="TileMap" parent="LRT"]
+visible = false
 tile_set = ExtResource( 1 )
 format = 1
 tile_data = PoolIntArray( 3, 1, 0, 4, 3, 0, 5, 3, 0, 6, 3, 1, 7, 3, 1, 8, 3, 1, 9, 3, 1, 10, 3, 1, 11, 3, 0, 12, 3, 0, 13, 1, 0, 16, 9, 0, 65540, 1, 0, 65541, 3, 0, 65542, 3, 65537, 65543, 3, 65537, 65544, 3, 65537, 65545, 3, 65537, 65546, 3, 65537, 65547, 3, 0, 65548, 1, 0, 131076, 1, 0, 131077, 3, 65536, 131078, 3, 65537, 131079, 3, 65537, 131080, 3, 65537, 131081, 3, 65537, 131082, 3, 65537, 131083, 3, 65538, 131084, 1, 0, 196610, 11, 196608, 196611, 11, 196609, 196612, 1, 0, 196613, 3, 0, 196614, 3, 0, 196615, 3, 65537, 196616, 3, 65537, 196617, 3, 65537, 196618, 3, 0, 196619, 3, 0, 196620, 1, 0, 262149, 1, 0, 262150, 3, 0, 262151, 3, 0, 262152, 3, 65537, 262153, 3, 0, 262154, 3, 0, 262155, 1, 0, 327686, 1, 0, 327687, 3, 0, 327688, 3, 0, 327689, 3, 0, 327690, 1, 0, 393216, 3, 0, 393217, 3, 1, 393218, 3, 2, 393223, 1, 0, 393224, 3, 0, 393225, 1, 0, 393230, 3, 0, 393231, 3, 1, 393232, 3, 2, 458752, 3, 65536, 458753, 3, 65537, 458754, 3, 65538, 458755, 11, 196608, 458756, 11, 196609, 458757, 11, 196609, 458758, 11, 196610, 458760, 1, 0, 458766, 3, 65536, 458767, 3, 65537, 458768, 3, 65538, 524288, 3, 65536, 524289, 3, 65537, 524290, 3, 65538, 524302, 3, 65536, 524303, 3, 65537, 524304, 3, 65538, 589824, 3, 65536, 589825, 3, 65537, 589826, 3, 65538, 589838, 3, 65536, 589839, 3, 65537, 589840, 3, 65538, 655360, 3, 131072, 655361, 3, 131073, 655362, 3, 131074, 655363, 1, 0, 655364, 3, 196608, 655365, 3, 196609, 655366, 3, 196609, 655367, 3, 196609, 655368, 3, 196609, 655369, 3, 196609, 655370, 3, 196609, 655371, 3, 196609, 655372, 3, 196610, 655373, 1, 0, 655374, 3, 131072, 655375, 3, 131073, 655376, 3, 131074 )
 
 [node name="Player" parent="LRT/5" instance=ExtResource( 3 )]
 position = Vector2( 95, 339 )
+
+[node name="Item" parent="LRT/5" instance=ExtResource( 8 )]
 
 [node name="LRTB" type="Node2D" parent="."]
 
@@ -188,6 +202,8 @@ tile_data = PoolIntArray( 0, 1, 0, 1, 3, 196608, 2, 3, 196609, 3, 3, 196609, 4, 
 
 [node name="Player" parent="LRTB/0" instance=ExtResource( 3 )]
 position = Vector2( 384, 192 )
+
+[node name="Item" parent="LRTB/0" instance=ExtResource( 8 )]
 
 [node name="1" type="TileMap" parent="LRTB"]
 visible = false
@@ -209,6 +225,8 @@ tile_data = PoolIntArray( 65542, 2, 0, 65543, 2, 0, 65544, 2, 0, 65545, 2, 0, 65
 
 [node name="Player" parent="LRTB/2" instance=ExtResource( 3 )]
 position = Vector2( 239, 338 )
+
+[node name="Item" parent="LRTB/2" instance=ExtResource( 8 )]
 
 [node name="3" type="TileMap" parent="LRTB"]
 visible = false
@@ -232,6 +250,10 @@ position = Vector2( 605, 168 )
 
 [node name="Firefly" parent="LRTB/4" instance=ExtResource( 6 )]
 position = Vector2( 527, 512 )
+
+[node name="Item" parent="LRTB/4" instance=ExtResource( 8 )]
+
+[node name="Item2" parent="LRTB/4" instance=ExtResource( 8 )]
 
 [node name="Side" type="Node2D" parent="."]
 visible = false

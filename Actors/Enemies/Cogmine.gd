@@ -1,11 +1,5 @@
 extends Area2D
 
-signal delete_item_self
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,7 +11,6 @@ func _ready():
 #    pass
 
 
-
-
-func _on_Item_body_entered(body):
-    emit_signal("delete_item_self")
+func _on_Cogmine_body_entered(body):
+    print("signal emitted")
+    SignalBus.emit_signal("player_reset")

@@ -31,6 +31,8 @@ onready var timeloop = $TimeLoop
 
 func _ready() -> void:
     timeloop.connect("restart", self, "on_Timer_restart")
+    SignalBus.connect("player_reset", self, "on_Player_reset")
+    SignalBus.connect("player_death", self, "on_Player_death")
     
     _rng.randomize()
     _rooms = Rooms.instance()
@@ -228,5 +230,12 @@ func _copy_room(offset: Vector2, type: int, start: bool) -> void:
         tilemap.set_cellv(map_offset + d.offset, d.cell)
 
 func on_Timer_restart():
-    print("restarted player position")
     _player.global_position = _player_spawn 
+
+func on_Player_reset():
+    _player.global_position = _player_spawn 
+    
+    #save later forcomplex logic?
+
+func on_Player_death():
+    get_tree().change_scene("res://UI/TitleScreen.tscn")

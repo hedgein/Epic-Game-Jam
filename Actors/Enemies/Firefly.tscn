@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Art/Firefly/Propeller 01.png" type="Texture" id=1]
 [ext_resource path="res://Art/Firefly/Firefly Shoot 02.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Art/Firefly/Firefly Shoot 03.png" type="Texture" id=7]
 [ext_resource path="res://Art/Firefly/Firefly Shoot 04.png" type="Texture" id=8]
 [ext_resource path="res://Art/Firefly/Firefly Shoot 05.png" type="Texture" id=9]
+[ext_resource path="res://Actors/Enemies/Firefly.gd" type="Script" id=10]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -31,7 +32,10 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[node name="Firefly" type="KinematicBody2D"]
+[node name="Firefly" type="Area2D"]
+collision_layer = 4
+monitorable = false
+script = ExtResource( 10 )
 
 [node name="Propeller" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.5, 0.5 )
@@ -44,3 +48,8 @@ frames = SubResource( 2 )
 animation = "shoot"
 frame = 4
 playing = true
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( -22, -12, -22, -12, -27, -6, -27, -1, -21, 3, -16, 4, -9, 2, -8, 6, -3, 9, 4, 11, 8, 7, 9, 5, 14, 4, 22, 3, 27, -4, 23, -12, 16, -12, 11, -7, 7, -4, 0, -4, -5, -4, -8, -3, -10, -7, -15, -12 )
+
+[connection signal="body_entered" from="." to="." method="_on_Firefly_body_entered"]

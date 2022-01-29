@@ -3,10 +3,10 @@ extends Node
 signal restart
 
 # Declare member variables here. Examples:
-onready var timerLabel = $CanvasLayer/timerLabel
+onready var timerLabel = $CanvasLayer/HBoxContainer/timerLabel
 onready var timeLoop = $timeLoop
 
-var total = 30.0
+var total = GameManager.loop_time
 
 
 # Called when the node enters the scene tree for the first time.
@@ -22,7 +22,7 @@ func _process(_delta):
     var timeInMins = timeLeft / 60
     var timeInSeconds = timeLeft as int % 60
     var format_string
-    if (timeInSeconds  < total): 
+    if (timeInSeconds  < total and timeInSeconds > 10): 
         format_string = "%d:%d"
     elif (timeInSeconds < 10):
         format_string = "%d:0%d"

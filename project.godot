@@ -30,6 +30,11 @@ config/name="Epic-Game-Jam"
 run/main_scene="res://UI/TitleScreen.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+SignalBus="*res://signal_bus.gd"
+GameManager="*res://game_manager.gd"
+
 [gdnative]
 
 singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
