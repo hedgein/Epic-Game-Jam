@@ -22,6 +22,7 @@ format = 1
 [node name="Extra" type="Node2D" parent="."]
 
 [node name="Player" parent="Extra" instance=ExtResource( 3 )]
+scale = Vector2( 1.5, 1.5 )
 speed = Vector2( 650, 1000 )
 
 [node name="Camera2D" type="Camera2D" parent="Extra"]
