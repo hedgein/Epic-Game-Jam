@@ -4,7 +4,7 @@ extends Label
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-var format_string = "%d/5"
+var format_string = "%d/3"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

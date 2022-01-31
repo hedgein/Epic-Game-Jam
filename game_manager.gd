@@ -11,7 +11,7 @@ func _ready():
 
 func on_Item_picked_up():
     points += 1
-    if points == 5:
+    if points == 3:
         SignalBus.emit_signal("item_complete")
 
 func on_Player_reset():

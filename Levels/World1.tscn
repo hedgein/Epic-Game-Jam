@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Levels/RandomWalker.gd" type="Script" id=1]
 [ext_resource path="res://Levels/Level.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Art/ParallaxBG/background-trees.svg" type="Texture" id=4]
 [ext_resource path="res://Camera2D.gd" type="Script" id=5]
 [ext_resource path="res://TimeLoop.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Music/Stage_Theme_1.mp3" type="AudioStream" id=7]
 
 [node name="RandomWalker" type="Node2D"]
 script = ExtResource( 1 )
@@ -41,6 +42,11 @@ region_enabled = true
 region_rect = Rect2( 0, 0, 800, 1200 )
 
 [node name="TimeLoop" parent="." instance=ExtResource( 6 )]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -5.073
+autoplay = true
 
 [connection signal="level_completed" from="." to="Camera2D" method="_on_LevelGenerator_level_completed"]
 [connection signal="zoom_changed" from="Camera2D" to="." method="_on_Camera2D_zoom_changed"]

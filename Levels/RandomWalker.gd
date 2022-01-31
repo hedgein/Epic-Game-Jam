@@ -33,6 +33,7 @@ func _ready() -> void:
     timeloop.connect("restart", self, "on_Timer_restart")
     SignalBus.connect("player_reset", self, "on_Player_reset")
     SignalBus.connect("player_death", self, "on_Player_death")
+    SignalBus.connect("item_complete", self, "on_item_complete")
     
     _rng.randomize()
     _rooms = Rooms.instance()
@@ -239,3 +240,6 @@ func on_Player_reset():
 
 func on_Player_death():
     get_tree().change_scene("res://UI/TitleScreen.tscn")
+
+func on_item_complete():
+    get_tree().change_scene("res://WinScreen.tscn")

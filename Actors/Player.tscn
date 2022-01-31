@@ -37,16 +37,15 @@ extents = Vector2( 31.5, 30 )
 [node name="Player" type="KinematicBody2D" groups=["player"]]
 collision_mask = 4
 script = ExtResource( 2 )
-gravity = 1000
+gravity = 1500
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "run_left"
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -0.5, 17 )
+position = Vector2( 0, 17 )
 shape = SubResource( 3 )
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
@@ -54,10 +53,10 @@ shape = SubResource( 3 )
 [node name="Tween" type="Tween" parent="."]
 
 [node name="GrabRay" type="RayCast2D" parent="."]
-position = Vector2( 3, 45 )
+position = Vector2( 2, 43 )
 enabled = true
 cast_to = Vector2( 50, 0 )
 
 [node name="TopGrabRay" type="RayCast2D" parent="."]
-position = Vector2( 4, -11 )
+position = Vector2( 1, -9 )
 cast_to = Vector2( 50, 0 )

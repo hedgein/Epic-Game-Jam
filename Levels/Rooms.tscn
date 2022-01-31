@@ -124,6 +124,7 @@ position = Vector2( 521, 434 )
 [node name="Item" parent="LRB/4" instance=ExtResource( 8 )]
 
 [node name="LRT" type="Node2D" parent="."]
+visible = false
 
 [node name="0" type="TileMap" parent="LRT"]
 visible = false
@@ -147,7 +148,6 @@ position = Vector2( 414, 225 )
 position = Vector2( 849, 177 )
 
 [node name="Item" parent="LRT/1" instance=ExtResource( 8 )]
-visible = false
 
 [node name="2" type="TileMap" parent="LRT"]
 visible = false
@@ -250,8 +250,6 @@ position = Vector2( 605, 168 )
 
 [node name="Firefly" parent="LRTB/4" instance=ExtResource( 6 )]
 position = Vector2( 527, 512 )
-
-[node name="Item" parent="LRTB/4" instance=ExtResource( 8 )]
 
 [node name="Item2" parent="LRTB/4" instance=ExtResource( 8 )]
 
