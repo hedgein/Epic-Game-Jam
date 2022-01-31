@@ -13,45 +13,40 @@ animations = [ {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run_right",
-"speed": 12.0
-}, {
-"frames": [ ExtResource( 5 ) ],
-"loop": true,
-"name": "idle_left",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run_left",
-"speed": 12.0
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 5 ) ],
 "loop": true,
 "name": "idle_right",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "idle_left",
+"speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 18.5, 19.5 )
+extents = Vector2( 31.5, 30 )
 
 [node name="Player" type="KinematicBody2D" groups=["player"]]
-scale = Vector2( 2, 2 )
 collision_mask = 4
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_group_": true
-}
 gravity = 1000
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-scale = Vector2( 0.5, 0.5 )
 frames = SubResource( 2 )
 animation = "run_left"
-frame = 2
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 4.5 )
+position = Vector2( -0.5, 17 )
 shape = SubResource( 3 )
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
@@ -59,10 +54,10 @@ shape = SubResource( 3 )
 [node name="Tween" type="Tween" parent="."]
 
 [node name="GrabRay" type="RayCast2D" parent="."]
-position = Vector2( 0, 25 )
+position = Vector2( 3, 45 )
 enabled = true
 cast_to = Vector2( 50, 0 )
 
 [node name="TopGrabRay" type="RayCast2D" parent="."]
-position = Vector2( 0, -12 )
+position = Vector2( 4, -11 )
 cast_to = Vector2( 50, 0 )

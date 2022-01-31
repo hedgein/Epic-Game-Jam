@@ -57,11 +57,9 @@ func get_input_grab_over(wall_check):
     #implement up/down climbing mechanic
     if Input.is_action_pressed("move_up"):
         velocity.y = lerp(velocity.y, -(speed.y / 5.0), acceleration)
-        velocity.x += dir * (speed.x / 4.0)
+        velocity.x += dir * (speed.x)
     elif Input.is_action_pressed("move_down"):
         velocity.y = lerp(velocity.y, (speed.y / 2.0), acceleration)
-
-
     else:
         velocity.y = lerp(velocity.y, 0, grab_friction)
         
@@ -105,12 +103,12 @@ func _physics_process(delta: float) -> void:
     #setup animations based on left/right movements
     if Input.is_action_just_pressed("move_right"):
         animated_sprite.play("run_right")
-        grab_ray.cast_to = Vector2(25, 0)
-        top_ray.cast_to = Vector2(25,0)
+        grab_ray.cast_to = Vector2(55, 0)
+        top_ray.cast_to = Vector2(55,0)
     elif Input.is_action_just_pressed("move_left"):
         animated_sprite.play("run_left")
-        grab_ray.cast_to = Vector2(-25, 0)
-        top_ray.cast_to = Vector2(-25,0)
+        grab_ray.cast_to = Vector2(-55, 0)
+        top_ray.cast_to = Vector2(-55,0)
 
     
     #implement  move character to left/right with 6 frame acceleration to top speed
