@@ -46,7 +46,6 @@ region_rect = Rect2( 0, 0, 800, 1200 )
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 7 )
 volume_db = -5.073
-autoplay = true
 
 [connection signal="level_completed" from="." to="Camera2D" method="_on_LevelGenerator_level_completed"]
 [connection signal="zoom_changed" from="Camera2D" to="." method="_on_Camera2D_zoom_changed"]

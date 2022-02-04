@@ -49,4 +49,3 @@ size_flags_vertical = 3
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 2 )
-autoplay = true

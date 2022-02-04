@@ -53,14 +53,12 @@ func get_input_wall_jump(wall_check):
         if Input.is_action_pressed("move_right"):  
             velocity.y = lerp(velocity.y, -3.7 * speed.y, jump_accel)
             
+#irrelevant
 func get_input_grab_over(wall_check):
-    #implement up/down climbing mechanic
-
     
     #right wall grabbed
     if wall_check.normal == Vector2(-1,0):
         dir = 1
-        
     elif wall_check.normal == Vector2(1,0):
         dir = -1
     
@@ -103,13 +101,17 @@ func _physics_process(delta: float) -> void:
       #  velocity.y = lerp(velocity.y, -3.7 * speed.y, jump_accel)
 
     
-    #set time point
-    if is_on_wall != prev_on_wall:
-        time_start = OS.get_unix_time()
-        
-    if (time_start + 0.006) > OS.get_unix_time():
-        velocity.x += dir * ( speed.x / 20)
-    
+#    #set time point
+#    if is_on_wall != prev_on_wall and is_at_corner:
+#        time_start = OS.get_unix_time()
+#        animated_sprite.play("run_right")
+#
+#    if (time_start + delta) > OS.get_unix_time():
+#        velocity.x += dir * ( speed.x / 20)
+#
+#    else:
+#        dir = 0
+#
     #grab mechanic
     if (is_on_wall or is_at_corner) and Input.is_action_pressed("grab"):
         #climb up and down while grabbing
@@ -117,31 +119,34 @@ func _physics_process(delta: float) -> void:
         
         #implement wall_jump
         get_input_wall_jump(wall_check)
+    
         
     #if at corner while grabbing
 #    if Input.is_action_pressed("grab") and (is_on_wall and top_result.size() == 0):  
 #    #implement getting over corner
 #        get_input_grab_over(wall_check)
+    if is_on_floor() and (Input.is_action_pressed("grab") or Input.is_action_pressed("move_up")):
+        animated_sprite.play("run_right")
             
     #setup animations based on left/right movements
     if Input.is_action_just_pressed("move_right"):
         animated_sprite.play("run_right")
-        grab_ray.cast_to = Vector2(50, 0)
-        top_ray.cast_to = Vector2(50,0)
+        grab_ray.cast_to = Vector2(35, 0)
+        top_ray.cast_to = Vector2(35,0)
     elif Input.is_action_just_pressed("move_left"):
         animated_sprite.play("run_left")
-        grab_ray.cast_to = Vector2(-50, 0)
-        top_ray.cast_to = Vector2(-50,0)
+        grab_ray.cast_to = Vector2(-35, 0)
+        top_ray.cast_to = Vector2(-35,0)
 
     
     #implement  move character to left/right with 6 frame acceleration to top speed
-    if Input.is_action_pressed("move_right"):
+    if Input.is_action_pressed("move_right") and !is_on_wall and !((time_start + delta) > OS.get_unix_time()):
         animated_sprite.flip_h = false
         var increment = speed_factor * speed.x / 4.2
         velocity.x += increment
         if velocity.x >= (speed_factor * speed.x):
             velocity.x = speed_factor * speed.x
-    elif Input.is_action_pressed("move_left"):
+    elif Input.is_action_pressed("move_left") and !is_on_wall and !((time_start + delta) > OS.get_unix_time()):
         animated_sprite.flip_h = true
         var increment = speed_factor * speed.x / 4.2
         velocity.x -= increment

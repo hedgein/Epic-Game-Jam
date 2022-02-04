@@ -14,3 +14,4 @@ func _ready():
 func _on_Cogmine_body_entered(body):
     print("signal emitted")
     SignalBus.emit_signal("player_reset")
+

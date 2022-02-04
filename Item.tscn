@@ -228,9 +228,6 @@ tracks/8/keys = {
 [node name="Item" type="Area2D"]
 position = Vector2( 0, -30 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="Node2D" type="Node2D" parent="."]
 

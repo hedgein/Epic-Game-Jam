@@ -15,6 +15,11 @@ animations = [ {
 "name": "run_right",
 "speed": 10.0
 }, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "idle_left",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run_left",
@@ -23,11 +28,6 @@ animations = [ {
 "frames": [ ExtResource( 5 ) ],
 "loop": true,
 "name": "idle_right",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 5 ) ],
-"loop": true,
-"name": "idle_left",
 "speed": 5.0
 } ]
 
@@ -42,6 +42,7 @@ gravity = 1500
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "run_left"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
